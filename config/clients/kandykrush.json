@@ -4,7 +4,7 @@
   "logo": "/clients/kandykrush/logo.png",
   "primaryColor": "#E91E63",
   "accentColor": "#FF5722",
-  "notificationEmail": "info@kandykrush.com",
+  "notificationEmail": "lewisashley.t@outlook.com",
   "driveFolder": "GOOGLE_DRIVE_FOLDER_ID",
   "formTitle": "Equipment Hire Agreement",
   "sections": [
@@ -71,16 +71,8 @@
       ]
     },
     {
-      "title": "Identification & Signature",
+      "title": "Signature",
       "fields": [
-        {
-          "name": "idUpload",
-          "label": "Upload Identification (Passport, Driving Licence, or Utility Bill)",
-          "type": "file",
-          "required": true,
-          "accept": "image/*,.pdf",
-          "maxSize": 15728640
-        },
         {
           "name": "signature",
           "label": "Digital Signature",
