@@ -1,0 +1,93 @@
+{
+  "clientName": "KandyKrush",
+  "slug": "kandykrush",
+  "logo": "/clients/kandykrush/logo.png",
+  "primaryColor": "#E91E63",
+  "accentColor": "#FF5722",
+  "notificationEmail": "info@kandykrush.com",
+  "driveFolder": "GOOGLE_DRIVE_FOLDER_ID",
+  "formTitle": "Equipment Hire Agreement",
+  "sections": [
+    {
+      "title": "Personal Information",
+      "fields": [
+        { "name": "firstName", "label": "First Name", "type": "text", "required": true },
+        { "name": "lastName", "label": "Last Name", "type": "text", "required": true },
+        { "name": "dateOfBirth", "label": "Date of Birth", "type": "date", "required": true },
+        { "name": "homeAddress", "label": "Home Address", "type": "textarea", "required": true },
+        { "name": "email", "label": "Email Address", "type": "email", "required": true },
+        { "name": "phone", "label": "Phone Number", "type": "tel", "required": true }
+      ]
+    },
+    {
+      "title": "Terms & Conditions",
+      "fields": [
+        {
+          "name": "termsAccepted",
+          "label": "I have read and understood the Terms & Conditions as set out on the website and social media pages.",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "name": "depositAccepted",
+          "label": "I agree to the holding of the security deposit. Any breakages or damage will be charged in accordance with the Terms & Conditions. The deposit amount will be discussed upon collection.",
+          "type": "checkbox",
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Event Details",
+      "fields": [
+        { "name": "installationAddress", "label": "Installation Address", "type": "textarea", "required": true },
+        { "name": "dateRequired", "label": "Date Required", "type": "date", "required": true },
+        { "name": "eventTime", "label": "Event / Entry Time", "type": "time", "required": true, "defaultValue": "14:30" },
+        { "name": "collectionDate", "label": "Collection Date", "type": "date", "required": true },
+        { "name": "collectionTime", "label": "Collection Time", "type": "time", "required": true, "defaultValue": "14:30" }
+      ]
+    },
+    {
+      "title": "Additional Information",
+      "fields": [
+        { "name": "accessNotes", "label": "Steps, Narrow Corridors, or Obstructions", "type": "textarea", "required": false, "placeholder": "Please detail any access difficulties, steps, narrow corridors, or obstructions at the installation address." },
+        { "name": "additionalComments", "label": "Additional Comments", "type": "textarea", "required": false, "placeholder": "Any further information you would like us to be aware of." }
+      ]
+    },
+    {
+      "title": "Equipment Responsibility",
+      "fields": [
+        {
+          "name": "noMovementAccepted",
+          "label": "I understand that hired equipment must not be moved once installed. Any damage resulting from unauthorised movement will be the hirer's responsibility.",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "name": "damageResponsibility",
+          "label": "I accept full responsibility for all hired equipment during the hire period. Any damage, loss, or breakages must be paid for in full.",
+          "type": "checkbox",
+          "required": true
+        }
+      ]
+    },
+    {
+      "title": "Identification & Signature",
+      "fields": [
+        {
+          "name": "idUpload",
+          "label": "Upload Identification (Passport, Driving Licence, or Utility Bill)",
+          "type": "file",
+          "required": true,
+          "accept": "image/*,.pdf",
+          "maxSize": 15728640
+        },
+        {
+          "name": "signature",
+          "label": "Digital Signature",
+          "type": "signature",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
