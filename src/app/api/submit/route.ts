@@ -48,7 +48,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, message: 'Agreement submitted successfully.' });
   } catch (error) {
-    console.error('Submission error:', error);
-    return NextResponse.json({ error: 'An error occurred processing your submission.' }, { status: 500 });
+    console.error('Submission error:', error instanceof Error ? error.stack : error);
+    const message = error instanceof Error ? error.message : 'An error occurred processing your submission.';
+    return NextResponse.json({ error: `Submission failed: ${message}` }, { status: 500 });
   }
 }
