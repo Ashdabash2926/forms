@@ -23,5 +23,6 @@ export interface ClientConfig {
   notificationEmail: string;
   driveFolder: string;
   formTitle: string;
+  hideName?: boolean;
   sections: SectionConfig[];
 }

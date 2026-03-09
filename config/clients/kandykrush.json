@@ -1,7 +1,8 @@
 {
   "clientName": "KandyKrush",
   "slug": "kandykrush",
-  "logo": "/clients/kandykrush/logo.png",
+  "logo": "/clients/kandykrush/banner.png",
+  "hideName": true,
   "primaryColor": "#7f8876",
   "accentColor": "#7f8876",
   "notificationEmail": "lewisashley.t@outlook.com",

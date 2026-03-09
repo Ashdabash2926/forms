@@ -29,13 +29,15 @@ export default function ClientPage({ params }: { params: { clientSlug: string } 
           {config.logo && (
             <div className="flex justify-center mb-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={config.logo} alt={config.clientName} className="h-16 w-auto" />
+              <img src={config.logo} alt={config.clientName} className={config.hideName ? "w-full max-w-2xl rounded-xl" : "h-16 w-auto"} />
             </div>
           )}
-          <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: config.primaryColor }}>
-            {config.clientName}
-          </h1>
-          <p className="text-gray-600 mt-1 text-lg">{config.formTitle}</p>
+          {!config.hideName && (
+            <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: config.primaryColor }}>
+              {config.clientName}
+            </h1>
+          )}
+          <p className="text-black mt-1 text-lg">{config.formTitle}</p>
         </header>
         <HireForm config={config} />
       </div>
