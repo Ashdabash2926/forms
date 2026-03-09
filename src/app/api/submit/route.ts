@@ -26,17 +26,25 @@ export async function POST(request: NextRequest) {
     // Generate PDF
     const pdfBuffer = await generatePDF(config, formData, signature);
 
-    // Upload to Google Drive
-    await uploadToDrive(pdfBuffer, fileName, config.driveFolder);
+    // Upload to Google Drive (optional, don't fail if it errors)
+    try {
+      await uploadToDrive(pdfBuffer, fileName, config.driveFolder);
+    } catch (driveErr) {
+      console.warn('Drive upload skipped/failed:', driveErr);
+    }
 
-    // Send email notification
-    await sendNotification(
-      config.notificationEmail,
-      config.clientName,
-      customerName,
-      pdfBuffer,
-      fileName
-    );
+    // Send email notification (optional, don't fail if not configured)
+    try {
+      await sendNotification(
+        config.notificationEmail,
+        config.clientName,
+        customerName,
+        pdfBuffer,
+        fileName
+      );
+    } catch (emailErr) {
+      console.warn('Email notification skipped/failed:', emailErr);
+    }
 
     return NextResponse.json({ success: true, message: 'Agreement submitted successfully.' });
   } catch (error) {
