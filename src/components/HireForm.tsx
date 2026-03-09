@@ -103,7 +103,7 @@ export default function HireForm({ config }: HireFormProps) {
         <h2 className="text-2xl font-semibold mb-2" style={{ color: config.primaryColor }}>
           Agreement Submitted
         </h2>
-        <p className="text-gray-600">Thank you. Your hire agreement has been received and a confirmation will be sent shortly.</p>
+        <p className="text-black">Thank you. Your hire agreement has been received and a confirmation will be sent shortly.</p>
       </div>
     );
   }
@@ -179,7 +179,7 @@ function FormField({
           className="mt-1 h-4 w-4 rounded"
           style={{ accentColor: primaryColor }}
         />
-        <span className="text-sm text-gray-700">{field.label} {field.required && <span className="text-red-500">*</span>}</span>
+        <span className="text-sm text-black">{field.label} {field.required && <span className="text-red-500">*</span>}</span>
       </label>
     );
   }
@@ -187,7 +187,7 @@ function FormField({
   if (field.type === 'textarea') {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-black mb-1">
           {field.label} {field.required && <span className="text-red-500">*</span>}
         </label>
         <textarea
@@ -205,7 +205,7 @@ function FormField({
   if (field.type === 'file') {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-black mb-1">
           {field.label} {field.required && <span className="text-red-500">*</span>}
         </label>
         <input
@@ -232,7 +232,7 @@ function FormField({
   if (field.type === 'signature') {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-black mb-1">
           {field.label} {field.required && <span className="text-red-500">*</span>}
         </label>
         <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
@@ -258,7 +258,7 @@ function FormField({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label className="block text-sm font-medium text-black mb-1">
         {field.label} {field.required && <span className="text-red-500">*</span>}
       </label>
       <input
