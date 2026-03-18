@@ -1,59 +1,155 @@
-import PDFDocument from 'pdfkit';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { ClientConfig } from './types';
+
+function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.substring(0, 2), 16) / 255;
+  const g = parseInt(clean.substring(2, 4), 16) / 255;
+  const b = parseInt(clean.substring(4, 6), 16) / 255;
+  return [r, g, b];
+}
 
 export async function generatePDF(
   config: ClientConfig,
   data: Record<string, string | boolean>,
   signatureDataUrl: string
 ): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ size: 'A4', margin: 50 });
-    const chunks: Uint8Array[] = [];
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([595, 842]); // A4
+  const { width, height } = page.getSize();
 
-    doc.on('data', (chunk: Uint8Array) => chunks.push(chunk));
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
-    doc.on('error', reject);
+  const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const fontRegular = await doc.embedFont(StandardFonts.Helvetica);
 
-    // Header
-    doc.fontSize(22).fillColor(config.primaryColor).text(config.clientName, { align: 'center' });
-    doc.fontSize(16).fillColor('#333').text(config.formTitle, { align: 'center' });
-    doc.moveDown(0.5);
-    doc.fontSize(9).fillColor('#666').text(`Generated: ${new Date().toLocaleString('en-GB')}`, { align: 'center' });
-    doc.moveDown(1);
+  const [pr, pg, pb] = hexToRgb(config.primaryColor || '#1a1a2e');
+  const primaryColor = rgb(pr, pg, pb);
 
-    // Sections
-    for (const section of config.sections) {
-      doc.fontSize(13).fillColor(config.primaryColor).text(section.title);
-      doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#ddd').stroke();
-      doc.moveDown(0.3);
+  let y = height - 50;
+  const margin = 50;
 
-      for (const field of section.fields) {
-        if (field.type === 'signature' || field.type === 'file') continue;
-        const value = data[field.name];
-        if (field.type === 'checkbox') {
-          doc.fontSize(10).fillColor('#333').text(`☑ ${field.label}`, { indent: 10 });
-        } else if (value) {
-          doc.fontSize(10).fillColor('#666').text(`${field.label}:`, { continued: true });
-          doc.fillColor('#000').text(`  ${value}`);
-        }
-      }
-      doc.moveDown(0.8);
-    }
-
-    // Signature
-    if (signatureDataUrl) {
-      doc.fontSize(13).fillColor(config.primaryColor).text('Signature');
-      doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#ddd').stroke();
-      doc.moveDown(0.5);
-      try {
-        const imgData = signatureDataUrl.replace(/^data:image\/\w+;base64,/, '');
-        const imgBuffer = Buffer.from(imgData, 'base64');
-        doc.image(imgBuffer, { width: 200, height: 80 });
-      } catch {
-        doc.fontSize(10).text('[Signature attached]');
-      }
-    }
-
-    doc.end();
+  // Title
+  page.drawText(config.clientName, {
+    x: margin,
+    y,
+    size: 22,
+    font: fontBold,
+    color: primaryColor,
   });
+  y -= 28;
+
+  page.drawText(config.formTitle, {
+    x: margin,
+    y,
+    size: 16,
+    font: fontRegular,
+    color: rgb(0.2, 0.2, 0.2),
+  });
+  y -= 20;
+
+  page.drawText(`Generated: ${new Date().toLocaleString('en-GB')}`, {
+    x: margin,
+    y,
+    size: 9,
+    font: fontRegular,
+    color: rgb(0.4, 0.4, 0.4),
+  });
+  y -= 30;
+
+  // Sections
+  for (const section of config.sections) {
+    if (y < 100) break;
+
+    // Section title
+    page.drawText(section.title, {
+      x: margin,
+      y,
+      size: 13,
+      font: fontBold,
+      color: primaryColor,
+    });
+    y -= 4;
+
+    // Divider line
+    page.drawLine({
+      start: { x: margin, y },
+      end: { x: width - margin, y },
+      thickness: 0.5,
+      color: rgb(0.85, 0.85, 0.85),
+    });
+    y -= 16;
+
+    for (const field of section.fields) {
+      if (field.type === 'signature' || field.type === 'file') continue;
+      if (y < 100) break;
+
+      const value = data[field.name];
+
+      if (field.type === 'checkbox') {
+        page.drawText(`✓ ${field.label}`, {
+          x: margin + 10,
+          y,
+          size: 10,
+          font: fontRegular,
+          color: rgb(0.2, 0.2, 0.2),
+        });
+        y -= 16;
+      } else if (value) {
+        page.drawText(`${field.label}:`, {
+          x: margin,
+          y,
+          size: 10,
+          font: fontBold,
+          color: rgb(0.4, 0.4, 0.4),
+        });
+        const valueText = String(value).substring(0, 80);
+        page.drawText(valueText, {
+          x: margin + 140,
+          y,
+          size: 10,
+          font: fontRegular,
+          color: rgb(0, 0, 0),
+        });
+        y -= 16;
+      }
+    }
+    y -= 12;
+  }
+
+  // Signature
+  if (signatureDataUrl && y > 120) {
+    page.drawText('Signature', {
+      x: margin,
+      y,
+      size: 13,
+      font: fontBold,
+      color: primaryColor,
+    });
+    y -= 4;
+
+    page.drawLine({
+      start: { x: margin, y },
+      end: { x: width - margin, y },
+      thickness: 0.5,
+      color: rgb(0.85, 0.85, 0.85),
+    });
+    y -= 16;
+
+    try {
+      const imgData = signatureDataUrl.replace(/^data:image\/\w+;base64,/, '');
+      const imgBuffer = Buffer.from(imgData, 'base64');
+      const sigImage = await doc.embedPng(imgBuffer);
+      page.drawImage(sigImage, { x: margin, y: y - 80, width: 200, height: 80 });
+    } catch {
+      page.drawText('[Signature attached]', {
+        x: margin,
+        y,
+        size: 10,
+        font: fontRegular,
+        color: rgb(0.4, 0.4, 0.4),
+      });
+    }
+  }
+
+  const pdfBytes = await doc.save();
+  return Buffer.from(pdfBytes);
 }
